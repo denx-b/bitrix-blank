@@ -1,0 +1,2 @@
+<?
+$MESS['MODE'] = 'working hours';

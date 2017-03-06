@@ -1,0 +1,113 @@
+Options -Indexes
+ErrorDocument 404 /404.php
+
+<IfModule mod_php5.c>
+    php_flag session.use_trans_sid off
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    Options +FollowSymLinks
+    RewriteEngine On
+
+    RewriteCond %{REQUEST_URI} ^(.*)/index\.php$
+    RewriteRule ^(.*)index\.php$ http://%{HTTP_HOST}/$1 [R=301,L]
+
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -l [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteCond %{REQUEST_FILENAME} [\xC2-\xDF][\x80-\xBF] [OR]
+    RewriteCond %{REQUEST_FILENAME} \xE0[\xA0-\xBF][\x80-\xBF] [OR]
+    RewriteCond %{REQUEST_FILENAME} [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2} [OR]
+    RewriteCond %{REQUEST_FILENAME} \xED[\x80-\x9F][\x80-\xBF] [OR]
+    RewriteCond %{REQUEST_FILENAME} \xF0[\x90-\xBF][\x80-\xBF]{2} [OR]
+    RewriteCond %{REQUEST_FILENAME} [\xF1-\xF3][\x80-\xBF]{3} [OR]
+    RewriteCond %{REQUEST_FILENAME} \xF4[\x80-\x8F][\x80-\xBF]{2}
+    RewriteCond %{REQUEST_FILENAME} !/bitrix/virtual_file_system.php$
+    RewriteRule ^(.*)$ /bitrix/virtual_file_system.php [L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-l
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !/bitrix/urlrewrite.php$
+    RewriteRule ^(.*)$ /bitrix/urlrewrite.php [L]
+    RewriteRule .* - [E=REMOTE_USER:%{HTTP:Authorization}]
+</IfModule>
+
+<IfModule mod_dir.c>
+	DirectoryIndex index.php index.html index.htm
+</IfModule>
+
+# gzip сжатие
+<IfModule mod_deflate.c>
+    # Выставляем заголовок Content-Encoding: gzip.
+    AddEncoding gzip .gz
+
+    # Для favicon.ico
+    AddOutputFilterByType DEFLATE image/x-icon
+    # Для CSS-файлов.
+    AddOutputFilterByType DEFLATE text/css
+    # Для JavaScript-файлов.
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/json
+    # Для остальных типов файлов.
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/x-component
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/atom+xml
+    AddOutputFilterByType DEFLATE font/truetype
+    AddOutputFilterByType DEFLATE font/opentype
+    AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+
+    # Отключаем сжатие для тех браузеров, у которых проблемы
+    # с его распознаванием.
+    BrowserMatch "MSIE [456]" no_gzip dont-vary
+    BrowserMatch "SV1;" !no_gzip !dont-vary
+    BrowserMatch "Opera" !no_gzip !dont-vary
+    BrowserMatch "Firefox/[0-3]\." gzip-only-text/html
+    BrowserMatch "Firefox/3\.[1-9]" !gzip-only-text/html
+    BrowserMatch "Chrome/2" gzip-only-text/html
+    BrowserMatch "Safari" gzip-only-text/html
+    BrowserMatch "Konqueror" gzip-only-text/html
+</IfModule>
+
+<IfModule mod_headers.c>
+    # Указываем прокси-серверам передавать заголовок User-Agent
+    # для корректного распознавания сжатия.
+    Header append Vary User-Agent env=!dont-vary
+
+    # Запрещаем кэширование на уровне прокси-сервера для всех
+    # файлов, для которых у нас выставлено сжатие.
+    <FilesMatch .*\.(css|js|php|phtml|shtml|html|xml)$>
+        Header append Cache-Control: "private, must-revalidate"
+    </FilesMatch>
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header set P3P "policyref=\"/w3c/p3p.xml\", CP=\"IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT\""
+</IfModule>
+
+# Заперещаем открытие сайта в iframe, на стороннем ресурсе. Тем самым предотвращаем clickjacking.
+<IfModule mod_headers.c>
+    Header set X-Frame-Options "SAMEORIGIN"
+    <FilesMatch "\.(appcache|atom|crx|css|cur|eot|f4[abpv]|flv|gif|htc|ico|jpe?g|js|json(ld)?|m4[av]|manifest|map|mp4|oex|og[agv]|opus|otf|pdf|png|rdf|rss|safariextz?|swf|tt[cf]|vcf|vtt|webapp|web[mp]|woff|xml|xpi)$">
+        Header unset X-Frame-Options
+    </FilesMatch>
+</IfModule>
+
+# Запрещаем IE автоматически определять тип документа.
+# Т.к. это потенциально может привести к проблемам с безопасностью.
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+</IfModule>
+
+<IfModule mod_expires.c>
+    ExpiresActive on
+    ExpiresByType image/jpeg "access plus 3 day"
+    ExpiresByType image/gif "access plus 3 day"
+    ExpiresByType image/png "access plus 3 day"
+    ExpiresByType text/css "access plus 3 day"
+    ExpiresByType application/javascript "access plus 3 day"
+</IfModule>
