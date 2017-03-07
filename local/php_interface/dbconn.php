@@ -15,4 +15,5 @@ ini_set('memory_limit', '2048M');
 @set_time_limit(0);
 
 // Игнорировать разрыв терминала. Скрипт ДОЛЖЕН выполняться даже после закрытия ssh-терминала
+// Либо предвещать запуск команды, командой "nohup" - nohup php cront_events.php
 @ignore_user_abort(true);
