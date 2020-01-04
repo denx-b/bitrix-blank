@@ -1,17 +1,17 @@
-<?
-$eventManager = \Bitrix\Main\EventManager::getInstance();
+<?php
 
-// Подключить вспомогательные функции
-include('include/settings.php');
+// composer
+require_once $_SERVER['DOCUMENT_ROOT'] . '/bitrix/vendor/autoload.php';
 
-// Подключить вспомогательные функции
-include('include/functions.php');
+// функции для разработчика
+require_once __DIR__ . '/include/functions.php';
 
-// Подключить обработчики событий модуля инфоблоков
-include('include/events/iblock.php');
+// Агенты на кроне
+if (!(defined('CHK_EVENT') && CHK_EVENT === true)) {
+    define('BX_CRONTAB_SUPPORT', true);
+}
 
-// Подключить обработчики событий главного модуля
-include('include/events/main.php');
-
-// Подключить обработчики событий модуля sale
-include('include/events/sale.php');
+// Настройка логирования php-ошибок
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
+ini_set('display_errors', '0');
+ini_set('error_log', $_SERVER['DOCUMENT_ROOT'] . '/upload/php-exception-log-txt');

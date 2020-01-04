@@ -1,39 +1,43 @@
-<?
-$this->__component->SetResultCacheKeys(array('SET_SPECIAL_DATE'));
-$APPLICATION->SetPageProperty('specialdate', $arResult['SET_SPECIAL_DATE']);
-?>
-<meta property="specialdate" content="<?$APPLICATION->ShowProperty("specialdate")?>">
+<?php
 
-
-<?
-$APPLICATION->ThrowException('Товар невозможно деактивировать');
-CEventLog::Add(array(
-	"SEVERITY" => "WARNING",	"AUDIT_TYPE_ID" => "MY_OWN_TYPE",
-	"MODULE_ID" => "iblock",	"ITEM_ID" => (int) $arParams["ID"],
-	"DESCRIPTION" => "Отмена деактивации"
-));
-
-
-AddEventHandler('main', 'OnBeforeEventAdd', 'OnBeforeEventFeedbackForm');
-function OnBeforeEventFeedbackForm(&$event, &$lid, &$arFields) {}
-
-
-$this->SetViewTarget("PRICES_BETWEEN");
+/**
+ * Как вывести произвольный контент в шаблоне сайта и компонента
+ * https://dev.1c-bitrix.ru/learning/course/index.php?COURSE_ID=43&LESSON_ID=3855
+ */
+$this->SetViewTarget('PRICES_BETWEEN');
 echo $arResult['PRICES']['MIN'] .' - '. $arResult['PRICES']['MAX'];
 $this->EndViewTarget();
 echo $APPLICATION->ShowViewContent('PRICES_BETWEEN');
 
 
-COption::GetOptionString($module_id, $name, $def="", $site=false, $bExactSite=false);
-COption::SetOptionString($module_id, $name, $value="", $desc=false, $site="");
-CEvent::Send($event, $lid, $arFields, $Duplicate = "Y", $message_id="", $files=array());
+/**
+ * Агенты на cron
+ */
+COption::SetOptionString('main', 'agents_use_crontab', 'N');
+echo COption::GetOptionString('main', 'agents_use_crontab', 'N');
+
+COption::SetOptionString('main', 'check_agents', 'N');
+echo COption::GetOptionString('main', 'check_agents', 'Y');
+
+/*
+ * Чтобы не увеличивалась очередь отправки почтовых сообщений, нужно изменить параметр,
+ * отвечающий за количество почтовых обрабатываемых за раз событий.
+ * Для этого выполняем в php-консоли следующую команду:
+ *
+ * COption::SetOptionString('main', 'mail_event_bulk', '20');
+ * echo COption::GetOptionString('main', 'mail_event_bulk', '5');
+ */
 
 
+/**
+ * Логирование в файл
+ */
 define('LOG_FILENAME', '/upload/log.txt');
 AddMessage2Log('Возникла ошибка');
 
 
 /**
+ * Специальные константы
  * http://dev.1c-bitrix.ru/api_help/main/general/constants.php
  *
  * SITE_ID                  Идентификатор текущего сайта.
@@ -44,8 +48,17 @@ AddMessage2Log('Возникла ошибка');
  * LOG_FILENAME             Хранит абсолютный путь к log-файлу, используемого функцией AddMessage2Log
  * BX_DISABLE_INDEX_PAGE    Если true, то GetPagePath возвращает путь с "index.php", иначе - путь, заканч. на "/"
  *
- * $APPLICATION->SetPageProperty("NOT_SHOW_NAV_CHAIN", "Y"); - скрыть хлебные крошки
- *
- * BX.ajax.get('url', {}, callback);
- * ACTIVE = Y, ACTIVE_DATE = Y, CHECK_PERMISSIONS => Y
+ * $APPLICATION->SetPageProperty('NOT_SHOW_NAV_CHAIN', 'Y'); - скрыть хлебные крошки
  */
+
+
+/**
+ * Передача данных из arResult кешированного компонента в component_epilog.php
+ * Под капотом битрикс сериализирует данные https://dev.1c-bitrix.ru/community/webdev/user/11948/blog/5500/
+ */
+$this->__component->SetResultCacheKeys(['SET_SPECIAL_DATE']);
+$APPLICATION->SetPageProperty('specialdate', $arResult['SET_SPECIAL_DATE']);
+\Bitrix\Main\Page\Asset::getInstance()->addString();
+?>
+<meta property="specialdate" content="<?php$APPLICATION->ShowProperty('specialdate')?>">
+

@@ -1,24 +1,28 @@
-<?
+<?php
 /**
- * Рекурсивная фильтрация массива через htmlspecialcharsbx
- *
- * @param $array
- * @return array
+ * Вывод значения переменной любого типа (str|array) в консоль браузера
+ * @param $debug_data
  */
-function specialchars_recursive($array) {
-    $result = array();
-    $values = array();
+function console_log($debug_data) {
+    $js = is_array($debug_data) ? json_encode($debug_data) : '"'.$debug_data.'"' ;
+    ?><script type="text/javascript">console.log(<?php echo $js?>)</script><?php
+}
 
-    foreach($array as $k => $val) {
-        $values[ $k ] = $val;
+/**
+ * print_r обёрнутая тегом pre
+ * @param $debug_data
+ */
+function p($debug_data, $die = true) {
+    $GLOBALS['APPLICATION']->RestartBuffer();
+    if ($die === true && ob_get_contents()) {
+        while (ob_get_contents()) {
+            ob_end_clean();
+        }
     }
 
-    foreach($values as $k => $val) {
-        if (is_array($val))
-            $result[ $k ] = specialchars_recursive($val);
-        else
-            $result[ $k ] = htmlspecialcharsbx( trim($val) );
-    }
+    ?><pre><?print_r($debug_data)?></pre><?php
 
-    return $result;
+    if ($die === true) {
+        die;
+    }
 }

@@ -1,13 +1,6 @@
 <?php
-$_SERVER["DOCUMENT_ROOT"] = '/home/bitrix/www';
-$DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];
 
-set_time_limit(0);
-define("NO_KEEP_STATISTIC", true);
-define("NOT_CHECK_PERMISSIONS", true);
-error_reporting(E_ERROR | E_WARNING | E_PARSE);
-
-require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_before.php");
+require_once __DIR__ . '/_header.php';
 
 @mb_http_output('utf-8');
 @mb_internal_encoding('utf-8');

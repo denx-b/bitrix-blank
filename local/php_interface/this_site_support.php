@@ -1,1 +1,1 @@
-Техническая поддержка www@consult-info.ru
+Техническая поддержка abc@legancy.ru
