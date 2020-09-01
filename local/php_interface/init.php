@@ -13,8 +13,19 @@ require_once __DIR__ . '/include/functions.php';
  * Событие до изменения элемента информационного блока
  * Обработчик в зависимости от ID инфоблока выполняет нужные дейтсвия
  */
-AddEventHandler('iblock', 'OnBeforeIBlockElementUpdate',
-    ['\Dbogdanoff\Events\Iblock', 'beforeIBlockElementUpdateHandler']);
+AddEventHandler('iblock', 'OnBeforeIBlockElementUpdate', ['\Dbogdanoff\Events\Iblock', 'beforeIBlockElementUpdateHandler']);
+
+/*
+ * Событие при выводе буферизированного контента.
+ * Обработчик минифицирует html
+ */
+AddEventHandler('main', 'OnEndBufferContent', ['\Dbogdanoff\Events\Main', 'endBufferContentHandler']);
+
+/*
+ * Событие в выполняемой части пролога сайта
+ * Обработчик активирует API
+ */
+AddEventHandler('main', 'OnBeforeProlog', ['\Dbogdanoff\Events\Main', 'initApi']);
 
 // remove index.php
 if (strpos($_SERVER['REQUEST_URI'], '/bitrix') === false && strpos($_SERVER['REQUEST_URI'], '/local') === false) {
