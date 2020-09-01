@@ -61,4 +61,3 @@ $APPLICATION->SetPageProperty('specialdate', $arResult['SET_SPECIAL_DATE']);
 \Bitrix\Main\Page\Asset::getInstance()->addString();
 ?>
 <meta property="specialdate" content="<?php$APPLICATION->ShowProperty('specialdate')?>">
-

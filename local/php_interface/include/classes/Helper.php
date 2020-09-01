@@ -1,4 +1,5 @@
 <?php
+
 namespace Dbogdanoff;
 
 use CUser;
@@ -106,8 +107,7 @@ class Helper
         if ($die === true) {
             echo json_encode($fields);
             die;
-        }
-        else {
+        } else {
             return $fields;
         }
     }

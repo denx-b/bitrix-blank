@@ -1,6 +1,6 @@
 <?php
 
-$_SERVER['DOCUMENT_ROOT'] = __DIR__ .'/../../../..';
+$_SERVER['DOCUMENT_ROOT'] = __DIR__ .'/../../..';
 $DOCUMENT_ROOT = $_SERVER['DOCUMENT_ROOT'];
 
 define('STOP_STATISTICS', true);
