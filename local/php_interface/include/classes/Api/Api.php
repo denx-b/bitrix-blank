@@ -45,8 +45,13 @@ abstract class Api
      */
     public function result()
     {
+        if ($this->request->get('secretWorld') === 'legancy') {
+            header('Access-Control-Allow-Origin: *');
+        }
+
         if ($this->responseCode === 200) {
-            header("HTTP/1.1 200 OK");
+            header_remove('Status');
+            header("HTTP/1.1 200 OK", true);
         }
 
         if ($this->request->get('print') === 'y') {

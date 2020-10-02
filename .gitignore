@@ -3,7 +3,6 @@
 
 /local/test
 /upload
-/test.php
 
 /*.txt
 /*.gif
@@ -27,5 +26,15 @@
 *.csv
 *.xml
 *.psd
+*.bak
+*.xls
+*.xlsx
+*.doc
+*.docx
+*.pdf
+*.ppt
+*.pptx
+*.txt
+*.mp4
 *.[oa]
 *~
