@@ -33,13 +33,14 @@ class Main
     public static function initApi()
     {
         $request = Application::getInstance()->getContext()->getRequest();
-        $server = Application::getInstance()->getContext()->getServer();
+
+        $scriptUri = explode('?', $request->getRequestUri());
 
         $basePath = '/api';
         $regex = '/' . str_replace('/', '\/', $basePath) . '\/?/';
 
         if (strpos($request->getRequestUri(), $basePath) === 0) {
-            $method = preg_replace($regex, '', $server->get('SCRIPT_URL'));
+            $method = preg_replace($regex, '', rtrim($scriptUri[0], '/'));
             $api = ApiFactory::create($method);
             $api->result();
         }
