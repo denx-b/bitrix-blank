@@ -26,3 +26,5 @@ function optimaze($filter)
 }
 
 optimaze("b_");
+
+\Bitrix\Main\Config\Option::set('main', 'LAST_DB_OPTIMIZATION_TIME', time());
