@@ -3,6 +3,7 @@
 namespace Dbogdanoff\Api;
 
 use Bitrix\Main\Application;
+use Bitrix\Main\DB\Exception;
 use Bitrix\Main\HttpRequest;
 use Bitrix\Main\Server;
 
@@ -21,13 +22,30 @@ abstract class Api
 
     protected $responseCode = 200;
 
+    /**
+     * Api constructor
+     * @throws \Exception
+     */
     public function __construct()
     {
+        if ($this->access() !== true) {
+            throw new Exception('Access denied');
+        }
+
         $this->server = Application::getInstance()->getContext()->getServer();
         $this->request = Application::getInstance()->getContext()->getRequest();
     }
 
     abstract public function init();
+
+    /**
+     * Реализуйте в своём методе проверку доступа, если это необходимо
+     * @return bool
+     */
+    protected function access(): bool
+    {
+        return true;
+    }
 
     /**
      * Установка сообщения об ошибки в результат
