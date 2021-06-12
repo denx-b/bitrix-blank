@@ -79,6 +79,7 @@ abstract class Api
             echo json_encode($this->result);
         }
 
+        require_once $this->server->getDocumentRoot() . '/bitrix/modules/main/include/epilog_after.php';
         die;
     }
 }
