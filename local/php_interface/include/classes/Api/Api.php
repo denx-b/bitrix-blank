@@ -28,12 +28,12 @@ abstract class Api
      */
     public function __construct()
     {
+        $this->server = Application::getInstance()->getContext()->getServer();
+        $this->request = Application::getInstance()->getContext()->getRequest();
+
         if ($this->access() !== true) {
             throw new Exception('Access denied');
         }
-
-        $this->server = Application::getInstance()->getContext()->getServer();
-        $this->request = Application::getInstance()->getContext()->getRequest();
     }
 
     abstract public function init();
