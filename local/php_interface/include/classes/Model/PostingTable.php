@@ -1,6 +1,6 @@
 <?php
 
-namespace Dbogdanoff\Model;
+namespace Legacy\Model;
 
 use Bitrix\Main;
 use Bitrix\Main\Localization\Loc;
@@ -32,7 +32,7 @@ use Bitrix\Main\Localization\Loc;
  * <li> BCC_TO_SEND string optional
  * </ul>
  *
- * @package Dbogdanoff\Model
+ * @package Legacy\Model
  **/
 
 class PostingTable extends Main\Entity\DataManager

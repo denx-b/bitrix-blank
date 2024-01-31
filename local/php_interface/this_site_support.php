@@ -1,1 +1,1 @@
-Техническая поддержка abc@legancy.ru
+Техническая поддержка support@legacy-agency.ru

@@ -1,11 +1,12 @@
 <?php
 
-namespace Dbogdanoff\Api;
+namespace Legacy\Api;
 
 use Bitrix\Main\Application;
 use Bitrix\Main\DB\Exception;
 use Bitrix\Main\HttpRequest;
 use Bitrix\Main\Server;
+use CUser;
 
 abstract class Api
 {
@@ -15,8 +16,11 @@ abstract class Api
     /** @var HttpRequest */
     public $request;
 
+    /** @var CUser */
+    public $user;
+
     /** @var array результат */
-    protected $result = [];
+    protected $result = ['success' => true];
 
     protected $responseType = 'json';
 
@@ -30,13 +34,12 @@ abstract class Api
     {
         $this->server = Application::getInstance()->getContext()->getServer();
         $this->request = Application::getInstance()->getContext()->getRequest();
+        $this->user = $GLOBALS['USER'];
 
         if ($this->access() !== true) {
             throw new Exception('Access denied');
         }
     }
-
-    abstract public function init();
 
     /**
      * Реализуйте в своём методе проверку доступа, если это необходимо
@@ -46,6 +49,8 @@ abstract class Api
     {
         return true;
     }
+
+    abstract public function init();
 
     /**
      * Установка сообщения об ошибки в результат
@@ -63,18 +68,12 @@ abstract class Api
      */
     public function result()
     {
-        if ($this->request->get('secretWorld') === 'legancy') {
-            header('Access-Control-Allow-Origin: *');
-        }
-
         if ($this->responseCode === 200) {
             header_remove('Status');
             header("HTTP/1.1 200 OK", true);
         }
 
-        if ($this->request->get('print') === 'y') {
-            echo '<pre>' . print_r($this->result, true) . '</pre>';
-        } else if ($this->responseType === 'json') {
+        if ($this->responseType === 'json') {
             header('Content-Type: application/json');
             echo json_encode($this->result);
         }

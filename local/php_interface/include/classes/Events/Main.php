@@ -1,16 +1,16 @@
 <?php
 
-namespace Dbogdanoff\Events;
+namespace Legacy\Events;
 
 use Bitrix\Main\Application;
-use Dbogdanoff\Api\ApiFactory;
+use Legacy\Api\ApiFactory;
 
 class Main
 {
     public static function endBufferContentHandler(&$content)
     {
         if (
-            defined('LEGANCY_MINIFY') &&
+            defined('LEGACY_MINIFY') &&
             strpos($_SERVER['REQUEST_URI'], '/bitrix') === false &&
             strpos($_SERVER['REQUEST_URI'], '/local') === false &&
             strpos($_SERVER['REQUEST_URI'], '/rest') === false &&
@@ -21,7 +21,7 @@ class Main
         ) {
             $arReplace = ['/(\s)+/s' => '\\1'];
 
-            if (LEGANCY_MINIFY === 'hard') {
+            if (LEGACY_MINIFY === 'hard') {
                 $arReplace['/\>[^\S ]+/s'] = '>';
                 $arReplace['/[^\S ]+\</s'] = ' <';
             }

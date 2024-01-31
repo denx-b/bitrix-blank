@@ -1,0 +1,6 @@
+{
+    "require": {
+        "shadz3rg/php-stamp": "^0.2.3",
+        "tecnickcom/tcpdf": "^6.5"
+    }
+}

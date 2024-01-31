@@ -1,8 +1,8 @@
 <?php
 
-namespace Dbogdanoff\Api\Methods;
+namespace Legacy\Api\Methods;
 
-use Dbogdanoff\Api\Api;
+use Legacy\Api\Api;
 
 class Unknown extends Api
 {

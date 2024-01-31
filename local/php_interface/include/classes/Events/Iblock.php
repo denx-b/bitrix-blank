@@ -1,6 +1,6 @@
 <?php
 
-namespace Dbogdanoff\Events;
+namespace Legacy\Events;
 
 class Iblock
 {

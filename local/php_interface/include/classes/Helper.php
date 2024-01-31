@@ -1,6 +1,6 @@
 <?php
 
-namespace Dbogdanoff;
+namespace Legacy;
 
 use CUser;
 use Bitrix\Main\Application;
@@ -48,7 +48,7 @@ class Helper
      * CURL-запрос
      * Возможно указать POST или Proxy при необходимости
      *
-     * @param $queryUrl
+     * @param string $queryUrl
      * @param array $queryData
      * @param bool $post
      * @param string $proxy
@@ -93,12 +93,11 @@ class Helper
     /**
      * Генерация сообщений, чаще всего в ajax-скриптах
      *
-     * @param $success
-     * @param $message
+     * @param bool $success
+     * @param string $message
+     * @param array $data
      * @param bool $die
-     * @param $data
-     *
-     * @return array|string
+     * @return array|void
      */
     public static function jsonMessage(bool $success = true, string $message = 'ok', array $data = [], bool $die = true)
     {
@@ -184,7 +183,7 @@ class Helper
     }
 
     /**
-     * Пример испольования self::num2word на примере Лет
+     * Пример использования self::num2word на примере Лет
      *
      * @param $year
      * @return mixed

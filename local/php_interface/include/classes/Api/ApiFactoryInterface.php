@@ -1,6 +1,6 @@
 <?php
 
-namespace Dbogdanoff\Api;
+namespace Legacy\Api;
 
 interface ApiFactoryInterface
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Dbogdanoff\Api;
+namespace Legacy\Api;
 
-use Dbogdanoff\Api\Methods;
+use Legacy\Api\Methods;
 
 class ApiFactory implements ApiFactoryInterface
 {

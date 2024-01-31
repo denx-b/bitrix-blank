@@ -2,7 +2,7 @@
 
 spl_autoload_register(function ($class) {
     // project-specific namespace prefix
-    $prefix = 'Dbogdanoff\\';
+    $prefix = 'Legacy\\';
 
     // base directory for the namespace prefix
     $base_dir = __DIR__ . '/classes/';
