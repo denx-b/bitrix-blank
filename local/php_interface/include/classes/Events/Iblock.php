@@ -4,18 +4,8 @@ namespace Legacy\Events;
 
 class Iblock
 {
-    public static function beforeIBlockElementUpdateHandler(&$arFields)
-    {
-        // Новости могут изменять только авторы или админы
-        if ($arFields['IBLOCK_ID'] == IBLOCK_ID_NEWS) {
-            self::checkPermissionBeforeUpdate($arFields);
-        }
-
-        // Застявляет указывать символьный код в каталоге
-        if ($arFields['IBLOCK_ID'] == IBLOCK_ID_CATALOG) {
-            self::checkCodeBeforeUpdate($arFields);
-        }
-    }
+    // Идентификатор ИБ новостей
+    const IB_NEWS = 1;
 
     /**
      * Метод запрещает изменять элементы не авторам
@@ -23,8 +13,13 @@ class Iblock
      * @param $arFields
      * @return bool
      */
-    public static function checkPermissionBeforeUpdate(&$arFields)
+    public static function onCheckPermissionBeforeUpdate(&$arFields): bool
     {
+        // Выходим, если изменяет элемент не новостей
+        if ($arFields['IBLOCK_ID'] != self::IB_NEWS) {
+            return true;
+        }
+        
         global $APPLICATION, $USER;
 
         $rsElement = \CIBlockElement::GetByID($arFields['ID']);
@@ -32,24 +27,6 @@ class Iblock
 
         if ($arFields['MODIFIED_BY'] != $arElement['CREATED_BY'] && $USER->IsAdmin() !== true) {
             $APPLICATION->ThrowException('Этот элемент может изменять только его создатель.');
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Метод проверяет наличие символьного кода у элемента
-     *
-     * @param $arFields
-     * @return bool
-     */
-    public static function checkCodeBeforeUpdate(&$arFields)
-    {
-        global $APPLICATION;
-
-        if (strlen($arFields["CODE"]) <= 0) {
-            $APPLICATION->throwException("Введите символьный код. (ID:" . $arFields["ID"] . ")");
             return false;
         }
 

@@ -8,7 +8,7 @@ class News extends Api
 {
     public function init()
     {
-        $this->result = [
+        $this->setField('news', [
             [
                 'id' => 1,
                 'name' => 'Название новости 1',
@@ -19,6 +19,6 @@ class News extends Api
                 'name' => 'Название новости 2',
                 'text' => 'Текст новости 2'
             ],
-        ];
+        ]);
     }
 }

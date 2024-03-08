@@ -3,54 +3,59 @@
 namespace Legacy\Api;
 
 use Bitrix\Main\Application;
-use Bitrix\Main\DB\Exception;
 use Bitrix\Main\HttpRequest;
 use Bitrix\Main\Server;
 use CUser;
+use Exception;
 
 abstract class Api
 {
     /** @var Server */
-    public $server;
+    public Server $server;
 
     /** @var HttpRequest */
     public $request;
 
     /** @var CUser */
-    public $user;
+    public CUser $user;
 
     /** @var array результат */
-    protected $result = ['success' => true];
+    private array $result = ['success' => true, 'errorMessage' => ''];
 
-    protected $responseType = 'json';
+    protected string $responseType = 'json';
 
-    protected $responseCode = 200;
-
-    /**
-     * Api constructor
-     * @throws \Exception
-     */
     public function __construct()
     {
         $this->server = Application::getInstance()->getContext()->getServer();
         $this->request = Application::getInstance()->getContext()->getRequest();
         $this->user = $GLOBALS['USER'];
-
-        if ($this->access() !== true) {
-            throw new Exception('Access denied');
-        }
     }
 
     /**
-     * Реализуйте в своём методе проверку доступа, если это необходимо
-     * @return bool
+     * @throws Exception
      */
-    protected function access(): bool
+    abstract function init();
+
+    protected function setField(string $name, $value, $key = false)
     {
-        return true;
+        if (strlen($key) > 0) {
+            $this->result[$name][$key] = $value;
+        } elseif ($key === null) {
+            $this->result[$name][] = $value;
+        } else {
+            $this->result[$name] = $value;
+        }
     }
 
-    abstract public function init();
+    protected function setFields(array $fields)
+    {
+        $this->result = array_merge($this->result, $fields);
+    }
+
+    protected function setSuccessMessage(string $message)
+    {
+        $this->setField('successMessage', $message);
+    }
 
     /**
      * Установка сообщения об ошибки в результат
@@ -58,27 +63,34 @@ abstract class Api
      * @param string $message
      * @param int $code
      */
-    public function setResultError(string $message, int $code = 0)
+    public function setResultError(string $message, int $code = 200)
     {
-        $this->result = ['error_message' => $message, 'error_code' => $code];
+        $this->result = ['success' => false, 'errorMessage' => $message];
+        header_remove('Status');
+        http_response_code($code ?: 200);
+    }
+
+    protected function filterMessage($message): string
+    {
+        return trim(strip_tags(preg_replace("/<br(.*)?>/", "\n", $message)));
+    }
+
+    protected function filterTrim(string $string): string
+    {
+        return trim(preg_replace("/\s+/", " ", $string));
     }
 
     /**
-     * Печать результата json или просто print_r в теге <pre>
+     * Вывод результата json
      */
     public function result()
     {
-        if ($this->responseCode === 200) {
-            header_remove('Status');
-            header("HTTP/1.1 200 OK", true);
-        }
-
         if ($this->responseType === 'json') {
             header('Content-Type: application/json');
             echo json_encode($this->result);
         }
 
-        require_once $this->server->getDocumentRoot() . '/bitrix/modules/main/include/epilog_after.php';
+        require_once $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/main/include/epilog_after.php';
         die;
     }
 }

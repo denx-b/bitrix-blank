@@ -13,7 +13,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 // Следующий пример подключает jQuery, файл стилей и скриптов на странице списка ИБ с ID IBLOCK_ID_NEWS
 if (
     $GLOBALS['APPLICATION']->GetCurPage(true) == '/bitrix/admin/iblock_list_admin.php' &&
-    $_REQUEST['IBLOCK_ID'] == IBLOCK_ID_NEWS
+    $_REQUEST['IBLOCK_ID'] == \Legacy\Events\Iblock::IB_NEWS
 ) {
     CJSCore::Init('jquery');
     Bitrix\Main\Page\Asset::getInstance()->addJs('');

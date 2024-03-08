@@ -2,8 +2,7 @@
 
 namespace Legacy\Events;
 
-use Bitrix\Main\Application;
-use Legacy\Api\ApiFactory;
+use Bitrix\Main\UrlRewriter;
 
 class Main
 {
@@ -32,17 +31,19 @@ class Main
 
     public static function initApi()
     {
-        $request = Application::getInstance()->getContext()->getRequest();
-
-        $scriptUri = explode('?', $request->getRequestUri());
-
-        $basePath = '/api';
-        $regex = '/' . str_replace('/', '\/', $basePath) . '\/?/';
-
-        if (strpos($request->getRequestUri(), $basePath) === 0) {
-            $method = preg_replace($regex, '', rtrim($scriptUri[0], '/'));
-            $api = ApiFactory::create($method);
-            $api->result();
+        $found = false;
+        $urlRewrite = UrlRewriter::getList(SITE_ID);
+        foreach ($urlRewrite as $item) {
+            if (strpos($item['PATH'], '/local/php_interface/include/api.php') !== false) {
+                $found = true;
+            }
+        }
+        if ($found !== true) {
+            UrlRewriter::add(SITE_ID, [
+                'CONDITION' => '#^/+api/(.*)#',
+                'RULE' => 'apiMethodName=$1',
+                'PATH' => '/local/php_interface/include/api.php',
+            ]);
         }
     }
 }

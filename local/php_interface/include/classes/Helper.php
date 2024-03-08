@@ -205,4 +205,27 @@ class Helper
 
         return false;
     }
+
+    /**
+     * Извлекает код видео из URL YouTube.
+     *
+     * @param string $url URL видео на YouTube.
+     * @return string|null Код видео или null, если код не найден.
+     */
+    public static function extractVideoCode(string $url): ?string
+    {
+        $patterns = [
+            '/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/', // Стандартный формат
+            '/youtube\.com\/watch\?.*v=([a-zA-Z0-9_-]+)&.*/', // С параметрами
+            '/youtu\.be\/([a-zA-Z0-9_-]+)/' // Короткий формат
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $url, $matches)) {
+                return $matches[1];
+            }
+        }
+
+        return null; // Возвращает null, если код не найден
+    }
 }
