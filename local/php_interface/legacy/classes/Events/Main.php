@@ -10,6 +10,7 @@ class Main
     {
         if (
             defined('LEGACY_MINIFY') &&
+            in_array(SITE_ID, LEGACY_MINIFY) &&
             strpos($_SERVER['REQUEST_URI'], '/bitrix') === false &&
             strpos($_SERVER['REQUEST_URI'], '/local') === false &&
             strpos($_SERVER['REQUEST_URI'], '/rest') === false &&
@@ -19,12 +20,6 @@ class Main
             $GLOBALS['USER']->IsAdmin() !== true
         ) {
             $arReplace = ['/(\s)+/s' => '\\1'];
-
-            if (LEGACY_MINIFY === 'hard') {
-                $arReplace['/\>[^\S ]+/s'] = '>';
-                $arReplace['/[^\S ]+\</s'] = ' <';
-            }
-
             $content = preg_replace(array_keys($arReplace), $arReplace, $content);
         }
     }
