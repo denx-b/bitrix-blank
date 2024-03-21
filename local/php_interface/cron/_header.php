@@ -3,11 +3,13 @@
 $_SERVER['DOCUMENT_ROOT'] = __DIR__ .'/../../..';
 $DOCUMENT_ROOT = $_SERVER['DOCUMENT_ROOT'];
 
-define('STOP_STATISTICS', true);
-define('NO_KEEP_STATISTIC', true);
-define('NOT_CHECK_PERMISSIONS', true);
-define('BX_NO_ACCELERATOR_RESET', true);
-define('PERFMON_STOP', true);
+const STOP_STATISTICS = true;
+const NO_KEEP_STATISTIC = true;
+const NOT_CHECK_PERMISSIONS = true;
+const BX_NO_ACCELERATOR_RESET = true;
+const PERFMON_STOP = true;
+const CHK_EVENT = true;
+const BX_WITH_ON_AFTER_EPILOG = true;
 
 @set_time_limit(0);
 @ignore_user_abort(true);
