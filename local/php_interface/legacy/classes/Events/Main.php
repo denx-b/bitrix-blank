@@ -10,6 +10,7 @@ class Main
     {
         if (
             defined('LEGACY_MINIFY') &&
+            is_array(LEGACY_MINIFY) &&
             in_array(SITE_ID, LEGACY_MINIFY) &&
             strpos($_SERVER['REQUEST_URI'], '/bitrix') === false &&
             strpos($_SERVER['REQUEST_URI'], '/local') === false &&
@@ -29,7 +30,7 @@ class Main
         $found = false;
         $urlRewrite = UrlRewriter::getList(SITE_ID);
         foreach ($urlRewrite as $item) {
-            if (strpos($item['PATH'], '/local/php_interface/include/api.php') !== false) {
+            if (strpos($item['PATH'], '/local/php_interface/legacy/api.php') !== false) {
                 $found = true;
             }
         }
@@ -37,7 +38,7 @@ class Main
             UrlRewriter::add(SITE_ID, [
                 'CONDITION' => '#^/+api/(.*)#',
                 'RULE' => 'apiMethodName=$1',
-                'PATH' => '/local/php_interface/include/api.php',
+                'PATH' => '/local/php_interface/legacy/api.php',
             ]);
         }
     }
