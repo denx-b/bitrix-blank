@@ -14,7 +14,14 @@ require_once __DIR__ . '/autoload.php';
 require_once __DIR__ . '/settings.php';
 
 // composer
-//require_once __DIR__ . '/vendor/autoload.php';
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require_once __DIR__ . '/vendor/autoload.php';
+}
+
+// functions
+foreach (glob(__DIR__ . '/functions/*.php') as $file) {
+    require_once $file;
+}
 
 // events
 foreach (glob(__DIR__ . '/eventHandlers/*.php') as $file) {
