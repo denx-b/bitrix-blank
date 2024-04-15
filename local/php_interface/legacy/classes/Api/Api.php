@@ -20,7 +20,7 @@ abstract class Api
     public CUser $user;
 
     /** @var array результат */
-    private array $result = ['success' => true, 'errorMessage' => ''];
+    private array $result = ['success' => true, 'errorMessage' => '', 'successMessage' => ''];
 
     protected string $responseType = 'json';
 
@@ -65,7 +65,7 @@ abstract class Api
      */
     public function setResultError(string $message, int $code = 200)
     {
-        $this->result = ['success' => false, 'errorMessage' => $message];
+        $this->setFields(['success' => false, 'errorMessage' => $message]);
         header_remove('Status');
         http_response_code($code ?: 200);
     }
