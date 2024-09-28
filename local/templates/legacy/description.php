@@ -9,6 +9,6 @@ use Bitrix\Main\Localization\Loc;
 Bitrix\Main\Localization\Loc::loadMessages(__FILE__);
 
 $arTemplate = Array(
-    "NAME" => Loc::getMessage('T_DESC_NAME'),
-    "DESCRIPTION" => Loc::getMessage('T_DESC_DESC')
+    "NAME" => Loc::getMessage("T_DESC_NAME"),
+    "DESCRIPTION" => Loc::getMessage("T_DESC_DESC")
 );

@@ -70,9 +70,10 @@ abstract class Api
         http_response_code($code ?: 200);
     }
 
-    protected function filterMessage($message): string
+    protected function filterToAlert($message): string
     {
-        return trim(strip_tags(preg_replace("/<br(.*)?>/", "\n", $message)));
+        $removedTags = strip_tags(preg_replace("/<br(.*)?>/", "\n", $message));
+        return $this->filterTrim($removedTags);
     }
 
     protected function filterTrim(string $string): string

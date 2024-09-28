@@ -2,7 +2,7 @@
 
 namespace Legacy\Events;
 
-class Iblock
+class IblockHandlers
 {
     // Идентификатор ИБ новостей
     const IB_NEWS = 1;

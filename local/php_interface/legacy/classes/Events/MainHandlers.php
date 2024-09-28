@@ -4,7 +4,7 @@ namespace Legacy\Events;
 
 use Bitrix\Main\UrlRewriter;
 
-class Main
+class MainHandlers
 {
     public static function endBufferContentHandler(&$content)
     {

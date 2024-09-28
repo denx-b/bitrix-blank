@@ -16,9 +16,9 @@ Asset::getInstance()->addJs(SITE_TEMPLATE_PATH . '/js/script.js');
 Asset::getInstance()->addString('<link rel="icon" type="image/x-icon" href="' . SITE_TEMPLATE_PATH . '/favicon.ico"/>');
 Asset::getInstance()->addString('<meta name="viewport" content="width=device-width, initial-scale=1">');
 ?><!doctype html>
-<html xml:lang="<?php echo LANGUAGE_ID ?>" lang="<?php echo LANGUAGE_ID ?>">
+<html xml:lang="<?= LANGUAGE_ID ?>" lang="<?= LANGUAGE_ID ?>">
 <head>
-    <title><?php echo $APPLICATION->ShowTitle() ?></title>
+    <title><?= $APPLICATION->ShowTitle() ?></title>
     <?php $APPLICATION->ShowHead(); ?>
 </head>
 <body>

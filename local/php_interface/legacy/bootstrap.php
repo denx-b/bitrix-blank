@@ -18,7 +18,7 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require_once __DIR__ . '/vendor/autoload.php';
 }
 
-// functions
+// functions or other files
 foreach (glob(__DIR__ . '/functions/*.php') as $file) {
     require_once $file;
 }

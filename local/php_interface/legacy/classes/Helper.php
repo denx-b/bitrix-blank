@@ -26,22 +26,105 @@ class Helper
         $arGroups = $user->GetUserGroupArray();
 
         /** @var array $PERM */
-        include $_SERVER['DOCUMENT_ROOT'] .'/bitrix/.access.php';
+        include $_SERVER['DOCUMENT_ROOT'] . '/bitrix/.access.php';
 
         $arAccess = [];
         foreach($PERM['admin'] as $group_id => $access) {
             if ($access == 'R' && is_numeric($group_id)) {
-                $arAccess[ $group_id ] = true;
+                $arAccess[$group_id] = true;
             }
         }
 
         foreach ($arGroups as $group_id) {
-            if ($arAccess[ $group_id ] === true) {
+            if ($arAccess[$group_id] === true) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    /**
+     * Используется в шаблоне сайта.
+     * Возвращает true, если содержимое страницы нужно оборачивать в контейнер.
+     * Страницы, где нужно спрятать контейнер, перечисляются в settings.php в массиве HIDE_CONTAINER
+     * 
+     * @return bool
+     */
+    public static function containerShow(): bool
+    {
+        global $APPLICATION;
+
+        $curPage = $APPLICATION->GetCurPage(false);
+
+        foreach (HIDE_CONTAINER as $rule) {
+            if (fnmatch($rule, $curPage)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $str
+     * @param bool $specialchars
+     * @return string
+     */
+    public static function filterString($str, bool $specialchars = true): string
+    {
+        $str = strip_tags($str);
+        $str = preg_replace('/\s+/', ' ', $str);
+        $str = trim($str);
+
+        if ($specialchars === false) {
+            return $str;
+        }
+
+        return htmlspecialchars($str);
+    }
+
+    /**
+     * @param $phoneNumber
+     * @return string
+     */
+    public static function filterPhoneNumber($phoneNumber) {
+        $phoneNumber = self::filterString($phoneNumber, false);
+
+        // Удаляем все кроме цифр
+        $phoneNumber = preg_replace('/\D/', '', $phoneNumber);
+
+        // Заменяем начальную '8' на '+7', если строка начинается с '8'
+        if (strpos($phoneNumber, '8') === 0) {
+            $phoneNumber = '+7' . substr($phoneNumber, 1);
+        } elseif (strpos($phoneNumber, '9') === 0) {
+            $phoneNumber = '+7' . $phoneNumber;
+        } else {
+            $phoneNumber = '+' . $phoneNumber;
+        }
+
+        return $phoneNumber;
+    }
+
+    /**
+     * @param $text
+     * @return string
+     */
+    public static function filterToFeed($text): string
+    {
+        if (!$text) {
+            return '';
+        }
+
+        $arReplace = array(
+            "&quot;" => '"',
+            "&amp;" => "&",
+            "&gt;" => ">",
+            "&lt;" => "<",
+            "&apos;" => "'"
+        );
+
+        return str_replace($arReplace, array_flip($arReplace), self::filterString($text, false));
     }
 
     /**
