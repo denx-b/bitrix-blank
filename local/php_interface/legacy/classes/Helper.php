@@ -74,7 +74,7 @@ class Helper
     public static function filterString($str, bool $specialchars = true): string
     {
         $str = strip_tags($str);
-        $str = preg_replace('/\s+/', ' ', $str);
+        $str = preg_replace('/ {2,}/', ' ', $str);
         $str = trim($str);
 
         if ($specialchars === false) {
@@ -84,11 +84,20 @@ class Helper
         return htmlspecialchars($str);
     }
 
+    public static function filterPhoneNumber($phoneNumber): string
+    {
+        if (LANGUAGE_ID === 'ru') {
+            return self::filterPhoneNumberRu($phoneNumber);
+        }
+        return self::filterPhoneNumberOther($phoneNumber);
+    }
+
     /**
      * @param $phoneNumber
      * @return string
      */
-    public static function filterPhoneNumber($phoneNumber) {
+    protected static function filterPhoneNumberRu($phoneNumber): string
+    {
         $phoneNumber = self::filterString($phoneNumber, false);
 
         // Удаляем все кроме цифр
@@ -100,6 +109,26 @@ class Helper
         } elseif (strpos($phoneNumber, '9') === 0) {
             $phoneNumber = '+7' . $phoneNumber;
         } else {
+            $phoneNumber = '+' . $phoneNumber;
+        }
+
+        return $phoneNumber;
+    }
+
+    /**
+     * @param $phoneNumber
+     * @return string
+     */
+    protected static function filterPhoneNumberOther($phoneNumber): string
+    {
+        $phoneNumber = self::filterString($phoneNumber, false);
+
+        $hasPlus = strpos($phoneNumber, '+') !== false;
+
+        // Удаляем все кроме цифр
+        $phoneNumber = preg_replace('/\D/', '', $phoneNumber);
+
+        if ($hasPlus) {
             $phoneNumber = '+' . $phoneNumber;
         }
 
@@ -171,27 +200,6 @@ class Helper
         curl_close($curl);
 
         return $result;
-    }
-
-    /**
-     * Генерация сообщений, чаще всего в ajax-скриптах
-     *
-     * @param bool $success
-     * @param string $message
-     * @param array $data
-     * @param bool $die
-     * @return array|void
-     */
-    public static function jsonMessage(bool $success = true, string $message = 'ok', array $data = [], bool $die = true)
-    {
-        $fields = ['SUCCESS' => $success, 'MESSAGE' => $message] + $data;
-
-        if ($die === true) {
-            echo json_encode($fields);
-            die;
-        } else {
-            return $fields;
-        }
     }
 
     /**
