@@ -4,9 +4,6 @@ namespace Legacy\Events;
 
 class IblockHandlers
 {
-    // Идентификатор ИБ новостей
-    const IB_NEWS = 1;
-
     /**
      * Метод запрещает изменять элементы не авторам
      *
@@ -16,10 +13,10 @@ class IblockHandlers
     public static function onCheckPermissionBeforeUpdate(&$arFields): bool
     {
         // Выходим, если изменяет элемент не новостей
-        if ($arFields['IBLOCK_ID'] != self::IB_NEWS) {
+        if ($arFields['IBLOCK_ID'] != \Legacy\Const\News::IBLOCK_ID) {
             return true;
         }
-        
+
         global $APPLICATION, $USER;
 
         $rsElement = \CIBlockElement::GetByID($arFields['ID']);

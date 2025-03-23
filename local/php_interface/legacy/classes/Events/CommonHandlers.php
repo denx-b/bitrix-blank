@@ -4,7 +4,7 @@ namespace Legacy\Events;
 
 use Bitrix\Main\UrlRewriter;
 
-class MainHandlers
+class CommonHandlers
 {
     public static function endBufferContentHandler(&$content)
     {
@@ -25,15 +25,27 @@ class MainHandlers
         }
     }
 
-    protected static function removeCommentsFromMultilineScripts($content)
-    {
-        // Регулярное выражение для поиска многострочных <script>...</script>
-        $pattern = '/<script>(.*?)<\/script>/is';
+    protected static function removeCommentsFromMultilineScripts($content) {
+        // Регулярное выражение для поиска многострочных <script>...</script> с атрибутами
+        $pattern = '/(<script.[^>]+>)(.*?)[\n|\r]<\/script>/is';
+
         $callback = function($matches) {
-            $scriptContent = $matches[1];
-            $scriptContent = preg_replace('/^\s*\/\/.*$/m', '', $scriptContent); // Удаление строк, начинающихся с //
-            return "<script>{$scriptContent}</script>";
+            // Сохраняем открывающий тег с атрибутами
+            $openingTag = $matches[1]; // Полный тег вместе с содержимым
+            $scriptContent = $matches[2];
+
+            // Самовызывающиеся функции с переносами строк или пробелами
+            $scriptContent = preg_replace('/}\)\s+\(/', '})(', $scriptContent);
+            // Закрыть строку точкой с запятой
+            $scriptContent = preg_replace('/}\)([\r|\n])/', '});$1', $scriptContent);
+
+            $scriptContent = preg_replace('/[\s\n\r]\/\/.*$/m', '', $scriptContent);
+            //$scriptContent = preg_replace('/\/\*.*?\*\//s', '', $scriptContent);
+
+            // Формируем новый тег <script> с очищенным содержимым
+            return "{$openingTag}{$scriptContent}</script>";
         };
+
         return preg_replace_callback($pattern, $callback, $content);
     }
 

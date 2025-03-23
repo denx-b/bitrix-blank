@@ -6,6 +6,6 @@ class Common
 {
     public static function yourAgentHere(): string
     {
-        return '\Legacy\Agents\Common::yourAgentHere();';
+        return '\\' . __CLASS__ . '::' . __FUNCTION__ . '();';
     }
 }

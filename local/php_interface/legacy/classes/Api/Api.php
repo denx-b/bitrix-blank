@@ -70,17 +70,6 @@ abstract class Api
         http_response_code($code ?: 200);
     }
 
-    protected function filterToAlert($message): string
-    {
-        $removedTags = strip_tags(preg_replace("/<br(.*)?>/", "\n", $message));
-        return $this->filterTrim($removedTags);
-    }
-
-    protected function filterTrim(string $string): string
-    {
-        return trim(preg_replace("/\s+/", " ", $string));
-    }
-
     /**
      * Вывод результата json
      */

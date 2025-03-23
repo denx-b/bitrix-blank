@@ -7,7 +7,7 @@
  * https://legacy-agency.ru/
  */
 
-// autoloader
+// autoloader PRS-4
 require_once __DIR__ . '/autoload.php';
 
 // constants
