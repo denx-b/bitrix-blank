@@ -4,9 +4,9 @@ namespace Legacy\Service;
 
 class Phone
 {
-    public static function filterPhoneNumber($phoneNumber): string
+    public static function filterPhoneNumber($phoneNumber, $ru = true): string
     {
-        if (LANGUAGE_ID === 'ru') {
+        if (LANGUAGE_ID === 'ru' && $ru === true) {
             return self::filterPhoneNumberRu($phoneNumber);
         }
         return self::filterPhoneNumberOther($phoneNumber);
@@ -43,7 +43,7 @@ class Phone
     {
         $phoneNumber = Str::filterString($phoneNumber);
 
-        $hasPlus = strpos($phoneNumber, '+') !== false;
+        $hasPlus = str_contains($phoneNumber, '+');
 
         // Удаляем все кроме цифр
         $phoneNumber = preg_replace('/\D/', '', $phoneNumber);

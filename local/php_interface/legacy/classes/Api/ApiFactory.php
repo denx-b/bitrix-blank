@@ -9,14 +9,10 @@ class ApiFactory implements ApiFactoryInterface
     public static function create(string $method = ''): Api
     {
         try {
-            switch ($method) {
-                case 'news':
-                    $api = new Methods\News();
-                    break;
-
-                default:
-                    $api = new Methods\Unknown();
-            }
+            $api = match ($method) {
+                'news' => new Methods\News(),
+                default => new Methods\Unknown(),
+            };
 
             $api->init();
 

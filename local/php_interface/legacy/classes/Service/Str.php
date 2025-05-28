@@ -13,11 +13,12 @@ class Str
      *
      * @param $str
      * @param bool $specialchars
+     * @param $allowed_tags
      * @return string
      */
-    public static function filterString($str, bool $specialchars = false): string
+    public static function filterString($str, bool $specialchars = false, $allowed_tags = null): string
     {
-        $str = strip_tags($str);
+        $str = strip_tags($str, $allowed_tags);
         $str = preg_replace('/ {2,}/', ' ', $str);
         $str = trim($str);
 

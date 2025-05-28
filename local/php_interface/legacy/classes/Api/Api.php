@@ -14,7 +14,7 @@ abstract class Api
     public Server $server;
 
     /** @var HttpRequest */
-    public $request;
+    public HttpRequest $request;
 
     /** @var CUser */
     public CUser $user;

@@ -6,7 +6,7 @@ use CUser;
 use Bitrix\Main\Application;
 use Exception;
 
-class Helper
+class Common
 {
     /**
      * Метод возвращает true если у текущего пользователя есть доступ в админку
