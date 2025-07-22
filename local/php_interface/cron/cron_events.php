@@ -2,6 +2,9 @@
 
 require_once __DIR__ . '/_header.php';
 
+global $DB;
+$DB->Query('SELECT 1');
+
 CAgent::CheckAgents();
 
 const BX_CRONTAB_SUPPORT = true;
