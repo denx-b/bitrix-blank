@@ -1,0 +1,61 @@
+name: 🩺 Production status
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  prod-status:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🩺 Check production git status
+        run: |
+          set -euo pipefail
+
+          echo "🔎 Fetching production status..."
+          URL="https://DOMAIN_HERE/api/deploy/gitStatus?token=your-token"
+          
+          [[ "$URL" == *"DOMAIN_HERE"* ]] && { echo "⚠️ DOMAIN_HERE в болванке, check пропущен"; exit 0; }
+
+          if ! RESPONSE=$(curl --silent --show-error --fail \
+            --connect-timeout 5 --max-time 20 \
+            --retry 2 --retry-delay 2 --retry-connrefused \
+            "$URL"); then
+            echo "❌ Network/API request failed"
+            exit 1
+          fi
+
+          echo "Response: $RESPONSE"
+
+          if [ -z "$RESPONSE" ]; then
+            echo "❌ Empty API response"
+            exit 1
+          fi
+
+          if ! echo "$RESPONSE" | jq -e . >/dev/null 2>&1; then
+            echo "❌ API returned invalid JSON"
+            exit 1
+          fi
+
+          CODE=$(echo "$RESPONSE" | jq -r '.code')
+
+          if [ "$CODE" = "0" ]; then
+            echo "✅ Production is clean"
+            exit 0
+          fi
+
+          if [ "$CODE" = "1" ]; then
+            echo "❌ Production has uncommitted changes"
+            echo "$RESPONSE" | jq -r '.files[]' || true
+            exit 1
+          fi
+
+          if [ "$CODE" = "403" ]; then
+            echo "❌ Access forbidden by API token check"
+            exit 1
+          fi
+
+          echo "⚠️ Unexpected response from prodStatus API (code=$CODE)"
+          exit 1

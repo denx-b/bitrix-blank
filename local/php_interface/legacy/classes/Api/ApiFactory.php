@@ -11,6 +11,8 @@ class ApiFactory implements ApiFactoryInterface
         try {
             $api = match ($method) {
                 'news' => new Methods\News(),
+                'deploy/gitStatus' => new Methods\Deploy\GitStatus(),
+
                 default => new Methods\Unknown(),
             };
 
