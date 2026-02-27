@@ -76,8 +76,17 @@ abstract class Api
     public function result()
     {
         if ($this->responseType === 'json') {
-            header('Content-Type: application/json');
-            echo json_encode($this->result);
+            header('Content-Type: application/json; charset=UTF-8');
+
+            try {
+                echo json_encode(
+                    $this->result,
+                    JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR
+                );
+            } catch (\JsonException $exception) {
+                http_response_code(500);
+                echo '{"success":false,"errorMessage":"JSON encode failed","successMessage":""}';
+            }
         }
 
         require_once $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/main/include/epilog_after.php';

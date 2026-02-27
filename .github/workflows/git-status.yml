@@ -1,4 +1,4 @@
-name: 🩺 Production status
+name: Production status
 
 on:
   pull_request:
@@ -10,18 +10,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🩺 Check production git status
+      - name: Check production git status
         run: |
           set -euo pipefail
 
           echo "🔎 Fetching production status..."
-          URL="https://DOMAIN_HERE/api/deploy/gitStatus?token=your-token"
+          URL="https://DOMAIN_HERE/api/deploy/gitStatus/?token=your-token"
           
           [[ "$URL" == *"DOMAIN_HERE"* ]] && { echo "⚠️ DOMAIN_HERE в болванке, check пропущен"; exit 0; }
 
           if ! RESPONSE=$(curl --silent --show-error --fail \
+            --location --max-redirs 3 \
+            --proto '=https' --proto-redir '=https' \
             --connect-timeout 5 --max-time 20 \
             --retry 2 --retry-delay 2 --retry-connrefused \
+            -H "Accept: application/json" \
             "$URL"); then
             echo "❌ Network/API request failed"
             exit 1

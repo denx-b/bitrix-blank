@@ -6,12 +6,14 @@ use Legacy\Api\Api;
 
 class GitStatus extends Api
 {
+    private const TOKEN = 'your-token';
+
     public function init()
     {
         // Простейшая защита для GitHub
         $token = (string)$this->request->get('token');
 
-        if ($token !== 'your-token') {
+        if ($token !== self::TOKEN) {
             $this->setFields([
                 'success' => false,
                 'status' => 'forbidden',

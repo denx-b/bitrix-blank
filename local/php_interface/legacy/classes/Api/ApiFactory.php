@@ -2,27 +2,36 @@
 
 namespace Legacy\Api;
 
+use Exception;
 use Legacy\Api\Methods;
 
-class ApiFactory implements ApiFactoryInterface
+class ApiFactory
 {
     public static function create(string $method = ''): Api
     {
         try {
-            $api = match ($method) {
-                'news' => new Methods\News(),
-                'deploy/gitStatus' => new Methods\Deploy\GitStatus(),
+            self::isValidMethodName($method);
 
-                default => new Methods\Unknown(),
-            };
+            $map = ApiRoutes::map();
+            $apiClass = $map[$method] ?? Methods\Unknown::class;
+            $api = new $apiClass();
 
             $api->init();
-
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $api = new Methods\Unknown();
             $api->setResultError($e->getMessage());
         }
 
         return $api;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private static function isValidMethodName(string $method)
+    {
+        if (preg_match('/^[A-Za-z0-9_\/-]+$/', $method) !== 1) {
+            throw new Exception('Invalid method format');
+        }
     }
 }
